@@ -1,0 +1,4 @@
+{
+    "main": "src/index.js",
+    "output": "tired-ollama-proxy.blob"
+}

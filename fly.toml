@@ -12,9 +12,9 @@ swap_size_mb = 8192
 [mounts]
   source = "models"
   destination = "/root/.ollama"
-  initial_size = "20gb"
+  initial_size = "100gb"
   auto_extend_size_threshold = 80
-  auto_extend_size_increment = "10GB"
+  auto_extend_size_increment = "50GB"
   auto_extend_size_limit = "500GB"
 
 [[services]]

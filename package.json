@@ -1,0 +1,22 @@
+{
+  "name": "tired-ollama-proxy",
+  "version": "0.1.0",
+  "main": "index.js",
+  "engines": {
+    "node": ">= 23.9.0"
+  },
+  "scripts": {
+    "build": "./build.sh",
+    "start": "node ./src/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "postject": "^1.0.0-alpha.6"
+  },
+  "dependencies": {
+    "http-proxy": "^1.18.1",
+    "yargs": "^17.7.2"
+  }
+}
