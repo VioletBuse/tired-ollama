@@ -1,4 +1,4 @@
-FROM node#23-alpine3.20 AS proxy_build
+FROM node:20-alpine AS proxy_build
 
 WORKDIR /workdir 
 

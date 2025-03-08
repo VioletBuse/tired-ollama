@@ -21,6 +21,9 @@ const serve = async ({ idle_time, origin, port, wait, api_key }) => {
   });
 
   const server = nodeHttp.createServer(function (req, res) {
+
+    console.log(`${req.url}`);
+
     if (api_key && req.headers.authorization.trim() !== `Bearer ${api_key}`) {
       res.statusCode = 401;
       res.end();
