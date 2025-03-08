@@ -1,22 +1,26 @@
 {
   "name": "tired-ollama-proxy",
   "version": "0.1.0",
-  "main": "index.js",
-  "engines": {
-    "node": ">= 23.9.0"
-  },
+  "main": "src/index.js",
+  "bin": "src/index.js",
   "scripts": {
-    "build": "./build.sh",
+    "build": "pkg . --out-path dist --no-bytecode --public-packages \"*\" --public",
     "start": "node ./src/index.js"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "postject": "^1.0.0-alpha.6"
+    "@yao-pkg/pkg": "^6.3.2"
   },
   "dependencies": {
     "http-proxy": "^1.18.1",
+    "wait-on": "^8.0.2",
     "yargs": "^17.7.2"
+  },
+  "pkg": {
+    "scripts": [
+      "node_modules/axios/dist/node/*"
+    ]
   }
 }
