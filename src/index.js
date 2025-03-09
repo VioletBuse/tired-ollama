@@ -1,26 +1,31 @@
 const nodeHttp = require("http");
 const httpProxy = require("http-proxy");
-const { URL } = require("node:url");
 const wait_on = require("wait-on");
 
 const serve = async ({ idle_time, origin, port, wait, api_key }) => {
-  const origin_url = new URL(origin);
-
-  try {
-    await wait_on({
-      resources: [origin],
-      timeout: wait * 1000,
-    });
-  } catch (err) {
-    console.log(`Couldn't reach ${origin} within ${wait} seconds, exiting.`);
-    process.exit(1);
-  }
 
   const proxy = httpProxy.createProxyServer({
     target: origin,
   });
 
-  const server = nodeHttp.createServer(function (req, res) {
+  let first_req = true;
+
+  const server = nodeHttp.createServer(async function (req, res) {
+
+
+    if (first_req) {
+      try {
+        await wait_on({
+          resources: [origin],
+          timeout: wait * 1000,
+        });
+      } catch (err) {
+        console.log(`Couldn't reach ${origin} within ${wait} seconds, exiting.`);
+        process.exit(1);
+      }
+
+      first_req = false
+    }
 
     console.log(`${req.url}`);
 

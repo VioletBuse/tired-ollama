@@ -5,7 +5,8 @@
   "bin": "src/index.js",
   "scripts": {
     "build": "pkg . --out-path dist --no-bytecode --public-packages \"*\" --public",
-    "start": "node ./src/index.js"
+    "proxy": "node ./src/index.js",
+    "start": "fly m run -e OLLAMA_HOST=http://tired-ollama.flycast --shell ollama/ollama"
   },
   "author": "",
   "license": "ISC",
