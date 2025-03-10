@@ -6,28 +6,21 @@ const serve = async ({ idle_time, origin, port, wait, api_key }) => {
 
   const proxy = httpProxy.createProxyServer({
     target: origin,
+    selfHandleResponse: true
   });
 
-  let first_req = true;
-
-  const server = nodeHttp.createServer(async function (req, res) {
-
-
-    if (first_req) {
       try {
         await wait_on({
           resources: [origin],
           timeout: wait * 1000,
         });
       } catch (err) {
-        console.log(`Couldn't reach ${origin} within ${wait} seconds, exiting.`);
+        console.log(`[tired-proxy] Couldn't reach ${origin} within ${wait} seconds, exiting.`);
         process.exit(1);
       }
+  const server = nodeHttp.createServer(async function (req, res) {
 
-      first_req = false
-    }
-
-    console.log(`${req.url}`);
+    console.log(`[tired-proxy] ${req.method} ${req.url}`);
 
     if (api_key && req.headers.authorization.trim() !== `Bearer ${api_key}`) {
       res.statusCode = 401;
@@ -50,14 +43,25 @@ const serve = async ({ idle_time, origin, port, wait, api_key }) => {
     active_requests += 1;
   });
 
-  proxy.on("proxyRes", function () {
-    if (active_requests > 0) {
-      active_requests -= 1;
-    }
+  proxy.on("proxyRes", function (proxy_response, req, res) {
 
-    if (active_requests <= 0) {
-      last_inactive = Date.now();
-    }
+    proxy_response.on('data', function (chunk) {
+      res.write(chunk)
+    })
+
+    proxy_response.on('end', function () {
+
+      res.end()
+
+      if (active_requests > 0) {
+        active_requests -= 1;
+      }
+
+      if (active_requests <= 0) {
+        last_inactive = Date.now();
+      }
+    })
+
   });
 
   proxy.on("open", function () {
@@ -78,7 +82,7 @@ const serve = async ({ idle_time, origin, port, wait, api_key }) => {
     if (last_inactive + idle_time * 1000 < Date.now() && active_requests <= 0) {
       const time_inactive = (Date.now() - last_inactive) / 1000;
       console.log(
-        `Proxy detected no activity since ${time_inactive} seconds, exiting.`
+        `[tired-proxy] Proxy detected no activity since ${time_inactive} seconds, exiting.`
       );
       process.exit(0);
     }

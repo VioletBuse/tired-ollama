@@ -7,20 +7,14 @@ app = 'tired-ollama'
 primary_region = 'ord'
 swap_size_mb = 8192
 
-[build]
-
 [env]
 OLLAMA_PROXY_PORT = '8080'
 OLLAMA_PROXY_IDLE_TIME = '20'
 OLLAMA_PROXY_ORIGIN = 'http://localhost:11434'
 
 [mounts]
-source = "models"
-destination = "/root/.ollama"
-initial_size = "100gb"
-auto_extend_size_threshold = 80
-auto_extend_size_increment = "50GB"
-auto_extend_size_limit = "500GB"
+source = "juicefs_cache"
+destination = "/var/jfsCache"
 
 [[services]]
 internal_port = 8080
